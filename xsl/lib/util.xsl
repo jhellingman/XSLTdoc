@@ -83,7 +83,7 @@
   </xsl:function>
   
   <xd:doc>
-    Tests if a the given path describes an absolute path.
+    Tests if a given path describes an absolute path.
   </xd:doc>
   <xsl:function name="util:isAbsolutePath" as="xs:boolean">
     <xsl:param name="path" as="xs:string"/>
@@ -151,11 +151,11 @@
   
   <xd:doc> 
     <xd:short>Builds realive link between to files</xd:short>
-    <xsl:detail>
+    <xd:detail>
       Like <xd:link type="xsl:function">util:getRelativeUri</xd:link>, 
       but the arguments are two abslute files URI instead of folders. The 
       filename is taken from the first argument.
-    </xsl:detail>
+    </xd:detail>
     <xd:param name="from">An absolute URI of a file</xd:param>
     <xd:param name="to">An absolute URI of a file</xd:param>
   </xd:doc>
@@ -250,7 +250,7 @@
   </xsl:function>  
   
   <xd:doc>
-    Strips all xml elements and comments from a set of nodes and returns only the text nodes.
+    Strips all XML elements and comments from a set of nodes and returns only the text nodes.
   </xd:doc>
   <xsl:function name="util:stripXML">
     <xsl:param name="nodes"/>
@@ -287,16 +287,16 @@
   <xd:private/>
   </xd:doc>
   <xsl:template match="*" mode="xmlToString">
-    <xsl:value-of select="concat('&lt;', name(.))"></xsl:value-of>
+    <xsl:value-of select="concat('&lt;', name(.))"/>
     <xsl:for-each select="@*">
-      <xsl:value-of select="concat(name(.),'=','&quot;',. ,'&quot;',' ')"></xsl:value-of>
+      <xsl:value-of select="concat(name(.),'=','&quot;',. ,'&quot;',' ')"/>
     </xsl:for-each>
-    <xsl:value-of select="'&gt;'"></xsl:value-of>
+    <xsl:value-of select="'&gt;'"/>
     <xsl:apply-templates mode="xmlToString"/>
-    <xsl:value-of select="concat('&lt;/', name(.),'&gt;')"></xsl:value-of>
+    <xsl:value-of select="concat('&lt;/', name(.),'&gt;')"/>
   </xsl:template>
   
-  <xsl:function name="util:xmlToHtml" as="item()*">
+  <xsl:function name="util:xmlToHtml">
     <xsl:param name="xml" as="item()*"/>
     <xsl:apply-templates select="$xml[not( self::text() and (position() = 1 or position() = last()) )]" mode="xmlToHtml"/>
   </xsl:function>
@@ -347,7 +347,7 @@
   
   <xd:doc>
     Removes specific indentation from each line of a text.
-    <xd:param name="text" type="string">The text the indentation should removed from.</xd:param>
+    <xd:param name="text" type="string">The text the indentation should be removed from.</xd:param>
     <xd:param name="indent" type="string">The indentation to be removed.</xd:param>
   </xd:doc>
   <xsl:function name="util:removeTextIndent">

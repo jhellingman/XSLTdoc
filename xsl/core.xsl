@@ -27,7 +27,7 @@
   <xsl:param name="targetDir" select="false()"/>
   
   <xd:doc>
-    Custom Stylesheets. Add additional (custom) css stylesheets here to override css rules from the standard css file (XSLTdoc.css). 
+    Custom Stylesheets. Add additional (custom) CSS stylesheets here to override CSS rules from the standard CSS file (XSLTdoc.css).
   </xd:doc>
   <xsl:param name="additionalCSS" as="xs:string*"/>
   
@@ -74,13 +74,13 @@
       <xsl:apply-templates select="$tmpConfig" mode="enhancePageAttributes"/>
     </xsl:variable>
     
-    <!-- Read the files to be processed from the config file and save them in a filelist -->
+    <!-- Read the files to be processed from the config file and save them in a filelist. -->
     <xsl:variable name="stylesheetList" as="element()*">
       <pagelist id="stylesheets">
         <xsl:call-template name="buildStylesheetPagelist">
           <xsl:with-param name="stylesheetUri" select="xs:string(base-uri(/))"/>
           <xsl:with-param name="rootUri" select="$sourceRootUriAbs"/>
-          <xsl:with-param name="targetUri" select="$targetDirUriAbs"></xsl:with-param>
+          <xsl:with-param name="targetUri" select="$targetDirUriAbs"/>
         </xsl:call-template>
       </pagelist>
     </xsl:variable>
@@ -135,18 +135,18 @@
       <xsl:apply-templates select="$tmpConfig" mode="enhancePageAttributes"/>
     </xsl:variable>
 
-    <!-- Read the files to be processed from the config file and save them in a filelist -->
+    <!-- Read the files to be processed from the config file and save them in a filelist. -->
     <xsl:variable name="stylesheetList" as="element()*">
       <xsl:for-each select="RootStylesheets/File">
         <xsl:call-template name="buildStylesheetPagelist">
           <xsl:with-param name="stylesheetUri" select="xs:string(resolve-uri(@href, $sourceRootUriAbs))"/>
           <xsl:with-param name="rootUri" select="$sourceRootUriAbs"/>
-          <xsl:with-param name="targetUri" select="$targetDirUriAbs"></xsl:with-param>
+          <xsl:with-param name="targetUri" select="$targetDirUriAbs"/>
         </xsl:call-template>
       </xsl:for-each>
     </xsl:variable>
     
-    <!-- Build distinct filelist eliminating file elements with the same @uri attribute -->
+    <!-- Build distinct filelist eliminating file elements with the same @uri attribute. -->
     <xsl:variable name="distinctStylesheetList" as="element()">
       <pagelist id="stylesheets">
         <xsl:for-each-group select="$stylesheetList" group-by="@srcUriAbs">
@@ -173,8 +173,7 @@
       <xsl:with-param name="config" select="$finalConfig" as="element()"/>
     </xsl:call-template>
   </xsl:template>
-  
-  
+
   <xsl:template match="*" mode="enhancePageAttributes">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
@@ -205,7 +204,7 @@
     <xsl:copy-of select="$config"/>-->
     <xsl:variable name="htmlTemplate" select="doc($config/htmlTemplate/@href)" as="document-node()"/>
     
-    <!-- Generate one html page for each page in config -->
+    <!-- Generate one HTML page for each page in config -->
     <xsl:for-each select="$config/page">
       <!--<xsl:message><xsl:copy-of select="@uriAbs">&#xA;</xsl:copy-of></xsl:message>-->
       <xsl:result-document href="{@uriAbs}" format="xhtml">
@@ -262,7 +261,7 @@
 </xsl:template>
 
 <xd:doc>
-  This template replaces the xdt:content element in the html template.
+  This template replaces the xdt:content element in the HTML template.
 </xd:doc>
 <xsl:template match="xdt:content" mode="htmlTemplate" xmlns="http://www.w3.org/1999/xhtml">
   <xsl:param name="config" tunnel="yes" as="element()"/>
@@ -271,7 +270,7 @@
 </xsl:template>
 
 <xd:doc>
-  This template replaces the xdt:cssDeclaration element in the html template.
+  This template replaces the xdt:cssDeclaration element in the HTML template.
 </xd:doc>
 <xsl:template match="xdt:cssDeclaration" mode="htmlTemplate"
   xmlns="http://www.w3.org/1999/xhtml">
@@ -308,7 +307,7 @@
 </xsl:template>
 
 <xd:doc>
-  This template replaces the xdt:menuLinks element in the html template.
+  This template replaces the xdt:menuLinks element in the HTML template.
 </xd:doc>
 <xsl:template match="xdt:menuLinks" mode="htmlTemplate" xmlns="http://www.w3.org/1999/xhtml">
   <xsl:param name="config" tunnel="yes" as="element()"/>
@@ -326,7 +325,7 @@
 </xsl:template>
 
 <xd:doc>
-  This stylesheet renders the content for pages definded in the 'stylesheet' pagelist.
+  This stylesheet renders the content for pages defined in the 'stylesheet' pagelist.
   It just applies the template rules to the root element of the stylesheets linked
   in the page element. This calls the template rules defined in stylesheet.xsl.
 </xd:doc>
@@ -431,11 +430,11 @@
   <xsl:param name="currentPage" tunnel="yes" as="element()"/>
   <div id="mainPage">
     <h1><xsl:value-of select="$config/XSLTdocConfig/Title"/></h1>
-    <xsl:apply-templates select="$config/XSLTdocConfig/Introduction/node()" mode="namspace2xhtml"/>
+    <xsl:apply-templates select="$config/XSLTdocConfig/Introduction/node()" mode="namespace2xhtml"/>
   </div>
 </xsl:template>
 
-<xsl:template match="*" mode="namspace2xhtml">
+<xsl:template match="*" mode="namespace2xhtml">
   <xsl:element name="{node-name(.)}" namespace="http://www.w3.org/1999/xhtml">
     <xsl:copy-of select="@*"/>
     <xsl:apply-templates mode="XdocTags"/>
@@ -452,7 +451,7 @@
     Builds a list of all stylesheet files by following the include and
     import links in each stylesheet.
     
-    <xd:param name="stylesheetUri">The URI of the stylesheet from which indcludes/imports should be followed to find files.</xd:param>
+    <xd:param name="stylesheetUri">The URI of the stylesheet from which includes/imports should be followed to find files.</xd:param>
     <xd:param name="rootUri">The root directory to which relative paths should be built to.</xd:param>
   </xd:doc>
   <xsl:template name="buildStylesheetPagelist" as="element()*">

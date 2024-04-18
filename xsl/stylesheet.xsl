@@ -8,12 +8,12 @@
                 version="2.0">
   
   <xd:doc type="stylesheet">
-    <xd:short>Creates a HTML page for a stylesheet.</xd:short>
+    <xd:short>Creates an HTML page for a stylesheet.</xd:short>
     <xd:detail>
       This stylesheet creates the xhtml output for one stylesheet. It calls sub-templates to
       build documentation parts for different parts of a stylesheet (templates, functions etc.).
       Note that the default namespace of this stylesheet is set to http://www.w3.org/1999/xhtml. 
-      That means that any literal element is of this namespace if not specified specificely!
+      That means that any literal element is in this namespace if not specified explicitly!
     </xd:detail>
     <xd:author>ibirrer</xd:author>
     <xd:cvsId>$Id: stylesheet.xsl 43 2009-11-07 13:02:24Z ibirrer $</xd:cvsId>
@@ -69,7 +69,7 @@
   <xd:doc>
     Extracts the short description from a xd:doc element. Everything before the
     first period is considered as short description. If the string doesn't
-    contain a period, the whole string is returned. 
+    contain a period, the entire string is returned.
     <xd:param name="doc" type="string">xd:doc element</xd:param>
   </xd:doc>
   <xsl:template name="extractShortDescription">
@@ -143,7 +143,7 @@
     </xsl:choose>
   </xsl:when>
   <xsl:otherwise>
-    <xsl:text></xsl:text>
+    <xsl:text/>
   </xsl:otherwise>
 </xsl:choose>
   </xsl:template>
@@ -356,7 +356,7 @@
   <xd:doc>
     <xd:short>Prints the short description of a documented xsl function or template.</xd:short>
     <xd:detail> 
-      If there's nn xd:doc element dedined or he xd:doc element does not contain a short description, the string 
+      If there is no xd:doc element defined or the xd:doc element does not contain a short description, the string
       &quot;No short description available&quot; is printed.
     </xd:detail>
   </xd:doc>
@@ -384,7 +384,6 @@
   
   <xd:doc>
     <xd:short>Returns the xd:doc node of an element.</xd:short>
-    <xd:detail></xd:detail>
     <xd:param name="element">
       The element can be one of the following:
       <ul>
@@ -410,7 +409,6 @@
   
   <xd:doc>
     <xd:short>Returns the xd:doc nodes for the mode(s) of a template.</xd:short>
-    <xd:detail></xd:detail>
     <xd:param name="element">
       The xsl:stylesheet or xsl:transform element.
     </xd:param>
@@ -1768,7 +1766,7 @@
        <xsl:when test="$type = 'named-template'">
          <xsl:text>#</xsl:text>
          <xsl:if test="/(xsl:stylesheet | xsl:transform)/xsl:template[@name = $name]">
-           <xsl:value-of select="generate-id(/(xsl:stylesheet | xsl:transform)/xsl:template[@name = $name])"></xsl:value-of>
+           <xsl:value-of select="generate-id(/(xsl:stylesheet | xsl:transform)/xsl:template[@name = $name])"/>
          </xsl:if>         
        </xsl:when>
        <xsl:when test="$type = 'match-template'">
@@ -1776,12 +1774,12 @@
          <xsl:choose>
            <xsl:when test="$mode">
              <xsl:if test="/(xsl:stylesheet | xsl:transform)/xsl:template[@match = $name and @mode = $mode]">
-               <xsl:value-of select="generate-id(/(xsl:stylesheet | xsl:transform)/xsl:template[@match = $name and @mode = $mode])"></xsl:value-of>
+               <xsl:value-of select="generate-id(/(xsl:stylesheet | xsl:transform)/xsl:template[@match = $name and @mode = $mode])"/>
              </xsl:if>               
            </xsl:when>
            <xsl:otherwise>
              <xsl:if test="/(xsl:stylesheet | xsl:transform)/xsl:template[@match = $name]">
-               <xsl:value-of select="generate-id(/(xsl:stylesheet | xsl:transform)/xsl:template[@match = $name])"></xsl:value-of>
+               <xsl:value-of select="generate-id(/(xsl:stylesheet | xsl:transform)/xsl:template[@match = $name])"/>
              </xsl:if>                        
            </xsl:otherwise>
          </xsl:choose>         
