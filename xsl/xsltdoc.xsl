@@ -13,7 +13,6 @@
   <xd:doc type="stylesheet">
     Frontend for core.xsl
     <xd:author>ibirrer</xd:author>
-    <xd:cvsId>$Id: xsltdoc.xsl 43 2009-11-07 13:02:24Z ibirrer $</xd:cvsId>
     <xd:copyright>2004, P&amp;P Software GmbH</xd:copyright>
   </xd:doc>
 

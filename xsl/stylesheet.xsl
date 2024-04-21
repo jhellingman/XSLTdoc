@@ -16,7 +16,6 @@
       That means that any literal element is in this namespace if not specified explicitly!
     </xd:detail>
     <xd:author>ibirrer</xd:author>
-    <xd:cvsId>$Id: stylesheet.xsl 43 2009-11-07 13:02:24Z ibirrer $</xd:cvsId>
     <xd:copyright>2004, P&amp;P Software GmbH</xd:copyright>
   </xd:doc>
   
@@ -26,9 +25,8 @@
       This parameter overrides the &lt;Access&gt; element inside an XSLTdocConfig file.
     </xd:detail>
   </xd:doc>
-  <xsl:param name="access" 
-    select="if (/XSLTdocConfig/Access) then /XSLTdocConfig/Access else 'public'" 
-    as="xs:string" />
+
+  <xsl:param name="access" select="if (/XSLTdocConfig/Access) then /XSLTdocConfig/Access else 'public'" as="xs:string"/>
 
   <xd:doc>
     <xd:short>Calls sub-templates for each part of the stylesheet documentation.</xd:short>
@@ -72,9 +70,10 @@
     contain a period, the entire string is returned.
     <xd:param name="doc" type="string">xd:doc element</xd:param>
   </xd:doc>
+
   <xsl:template name="extractShortDescription">
-    <xsl:param name="doc"/>
-    <xsl:variable name="shortDesc" select="substring-before(string-join($doc/text(),''),'.')"/>
+    <xsl:param name="doc" as="element()"/>
+    <xsl:variable name="shortDesc" select="substring-before(string-join($doc/text(), ''), '.')"/>
     <xsl:choose>
       <xsl:when test="string-length($shortDesc) &lt;= 0">
         <xsl:value-of select="$doc/text()"/>
@@ -93,9 +92,12 @@
       xd:doc element
     </xd:param>
   </xd:doc>
+
   <xsl:template name="extractDetailDescription">
     <xsl:param name="doc" as="element()"/>
-    <xsl:variable name="detailDesc" select="substring-after(string-join($doc/text(),''),'.')"/>
+
+    <xsl:variable name="detailDesc" select="substring-after(string-join($doc/text(), ''), '.')"/>
+
     <xsl:choose>
       <xsl:when test="string-length($detailDesc) &lt;= 0">
          <xsl:text/>
@@ -109,12 +111,13 @@
   </xsl:template>
   
   <xd:doc>
-    <xd:short>Prints the detail description of a xd:doc element.</xd:short>
+    <xd:short>Prints the detailed description of a xd:doc element.</xd:short>
     <xd:detail> 
-      If no detail description is found, the string &quot;No
+      If no detailed description is found, the string &quot;No
       detail description available&quot; is printed
     </xd:detail>
   </xd:doc>
+
   <xsl:template 
     match="xsl:function | xsl:template | xsl:stylesheet | 
       xsl:transform | xsl:param | xsl:variable | xsl:attribute-set | xsl:key | 
@@ -124,28 +127,28 @@
     <xsl:param name="doc" select="xd:getDoc(.)" as="element(xd:doc)?"/>
     <xsl:choose>
       <xsl:when test="count($doc) != 0">
-      <!-- xd documentation exists, find detail description -->
-      <xsl:choose>
-      <xsl:when test="$doc/xd:detail">
-        <div class="detailDescr">
-          <xsl:apply-templates select="$doc/xd:detail/child::node()" mode="XdocTags" />
-        </div>
+        <!-- xd documentation exists, find detail description -->
+        <xsl:choose>
+          <xsl:when test="$doc/xd:detail">
+            <div class="detailDescr">
+              <xsl:apply-templates select="$doc/xd:detail/child::node()" mode="XdocTags"/>
+            </div>
+          </xsl:when>
+          <xsl:otherwise>
+            <!--
+              No xd:detail element found, use text after first period as
+              detail description.
+            -->
+            <xsl:call-template name="extractDetailDescription">
+              <xsl:with-param name="doc" select="$doc"/>
+            </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <!--
-          No xd:detail element found, use text after first period as
-          detail description.
-        -->
-        <xsl:call-template name="extractDetailDescription">
-          <xsl:with-param name="doc" select="$doc" />
-        </xsl:call-template>
+        <xsl:text/>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:when>
-  <xsl:otherwise>
-    <xsl:text/>
-  </xsl:otherwise>
-</xsl:choose>
   </xsl:template>
   
   <!-- 
@@ -156,6 +159,7 @@
   <xd:doc>
     <xd:short>Prints the properties of a xd:doc element.</xd:short>
   </xd:doc>
+
   <xsl:template 
     match="xsl:function | xsl:template | xsl:stylesheet | xsl:transform | 
       xsl:param | xsl:variable | xsl:attribute-set | xsl:key | xsl:output | 
@@ -165,6 +169,7 @@
     <xsl:param name="doc" select="xd:getDoc(.)" as="element(xd:doc)?"/>
     <xsl:param name="root" select="(ancestor-or-self::xsl:stylesheet | ancestor-or-self::xsl:transform)[last()]" as="element(*)?"/>
     <xsl:param name="modeDoc" select="if (self::xsl:template) then xd:getModeDoc($root, @mode) else ()" />
+
     <xsl:variable name="htmlResult">
       <xsl:variable name="cur" select="." />
 
@@ -270,20 +275,21 @@
        <xsl:variable name="namespacePrefixes" as="xs:string*">
          <xsl:choose>
            <xsl:when test="self::xsl:stylesheet or self::xsl:transform">
-             <xsl:variable name="prefixes" select="in-scope-prefixes(.)"/>
              <xsl:for-each select="in-scope-prefixes(.)">
-               <xsl:sort />
+               <xsl:sort/>
                <xsl:choose>
-                 <xsl:when test=". = 'xml'" />
+                 <xsl:when test=". = 'xml'"/>
                  <xsl:when test=". = ''">#default</xsl:when>
                  <xsl:otherwise><xsl:sequence select="." /></xsl:otherwise>
                </xsl:choose>
              </xsl:for-each>
            </xsl:when>
+
            <xsl:when test="self::xsl:namespace-alias">
              <xsl:if test="@stylesheet-prefix"><xsl:sequence select="@stylesheet-prefix"/></xsl:if>
              <xsl:if test="@result-prefix"><xsl:sequence select="@result-prefix"/></xsl:if>
            </xsl:when>
+
            <xsl:when test="self::xsl:preserve-space or self::xsl:strip-space">
              <xsl:variable name="namespaceListDup" as="xs:string*">
                <xsl:for-each select="xd:splitWhitespaceString(@elements)">
@@ -292,6 +298,7 @@
              </xsl:variable>
              <xsl:sequence select="distinct-values($namespaceListDup)" />
            </xsl:when>
+
            <xsl:when test="not(self::xd:mode)">
             <!-- Warn about anything that differs from the root -->
             <xsl:for-each select="distinct-values((in-scope-prefixes($cur), in-scope-prefixes($root)))">
@@ -299,13 +306,14 @@
               <xsl:if test="string(namespace-uri-for-prefix(., $cur)) != string(namespace-uri-for-prefix(., $root))">
                 <xsl:choose>
                   <xsl:when test=". = ''">#default</xsl:when>
-                  <xsl:otherwise><xsl:sequence select="." /></xsl:otherwise>
+                  <xsl:otherwise><xsl:sequence select="."/></xsl:otherwise>
                 </xsl:choose>
               </xsl:if>
             </xsl:for-each>
            </xsl:when>
          </xsl:choose>
        </xsl:variable>
+
        <xsl:if test="exists($namespacePrefixes)">
           <div class="property">
             <div class="propertyCaption">Namespace Prefix Summary:</div>
@@ -333,6 +341,7 @@
        </xsl:if>
        
     </xsl:variable>
+
     <xsl:if test="count($htmlResult/*) != 0">   
       <div class="properties">
         <xsl:copy-of select="$htmlResult"/>
@@ -392,9 +401,10 @@
         <li>xsl:template</li>
         <li>xsl:function</li>
       </ul>
-      Returns the empty sequence if no xd:doc element was found for the given element.
+      Returns the empty sequence if no <code>xd:doc</code> element was found for the given element.
     </xd:param>
   </xd:doc>
+
   <xsl:function name="xd:getDoc" as="element(xd:doc)?">
     <xsl:param name="element" as="element(*)"/>
     <xsl:choose>
@@ -418,6 +428,7 @@
     <xd:author>Greg Beauchesne</xd:author>
     <xd:since>09/2009</xd:since>
   </xd:doc>
+
   <xsl:function name="xd:getModeDoc" as="element(xd:doc)*">
     <xsl:param name="element" as="element(*)"/>
     <xsl:param name="mode" />
@@ -447,10 +458,11 @@
   
   <xd:doc>
     Prints the declaration of a function or template.
-    <xd:param name="link">If this parameter equals to true() it adds the declaration as a link to the detailied declaration</xd:param>
+    <xd:param name="link" type="string">If this parameter equals to true() it adds the declaration as a link to the detailed declaration</xd:param>
   </xd:doc>
+
   <xsl:template match="xsl:function | xsl:template | xsl:param | xsl:variable | xsl:attribute-set | xsl:key | xsl:output | xsl:preserve-space | xsl:strip-space | xsl:namespace-alias | xsl:character-map | xsl:decimal-format | xd:mode" mode="printDeclaration">
-    <xsl:param name="link" select="false()"/>
+    <xsl:param name="link" select="''" as="xs:string"/>
     <xsl:param name="doc" select="xd:getDoc(.)" as="element(xd:doc)?"/>
     <xsl:param name="sourceLinkNode" select="if ($doc) then $doc else ."/>
     <xsl:param name="verbatimUriRel" select="concat(util:getFile(base-uri($sourceLinkNode)), '.src.html')"/>
@@ -491,7 +503,7 @@
       <!-- Declaration Name -->
       <span class="declName">
         <xsl:choose>
-          <xsl:when test="$link">
+          <xsl:when test="$link != ''">
             <a class="declLink" href="{$link}"><xsl:value-of select="$name"/></a>
           </xsl:when>
           <xsl:when test="self::xd:mode[@name = '#default']">
@@ -506,13 +518,13 @@
         </xsl:choose>
       </span>
       <!-- Mode and Params and (key: match and use)  -->
-      <xsl:variable name="propertyInfo" as="element(*)*"> 
-				<xsl:if test="@use-when or @xsl:use-when">
+      <xsl:variable name="propertyInfo" as="element(*)*">
+        <xsl:if test="@use-when or @xsl:use-when">
           <div>
-            <span class="declCaption">use-when: </span>
+            <span class="declCaption">use-when:</span>
             <xsl:value-of select="@use-when | @xsl:use-when"/>
           </div>
-				</xsl:if>
+        </xsl:if>
 
         <xsl:if test="xsl:param">
           <div>
@@ -637,6 +649,7 @@
   <xd:doc>
     <xd:short>Indexes all xsl:attribute-set elements in each stylesheet by name.</xd:short>
   </xd:doc>
+
   <xsl:key
     name="xd:attribute-set"
     match="/xsl:stylesheet/xsl:attribute-set | /xsl:transform/xsl:attribute-set"
@@ -667,7 +680,7 @@
    
   <xsl:function name="xd:printMode">
     <xsl:param name="root" as="element(*)"/>
-    <xsl:param name="mode"/>
+    <xsl:param name="mode" as="xs:string"/>
     <!-- Template match -->          
     <span class="modeName">
       <xsl:choose>
@@ -726,6 +739,7 @@
     <xd:author>Greg Beauchesne</xd:author>
     <xd:since>09/2009</xd:since>
   </xd:doc>
+
   <xsl:template match="xsl:stylesheet | xsl:transform" mode="outputsDetail">
     <xsl:if test="xsl:output[xd:accessMatch(.)]">
       <div id="outputsDetail" class="detailSection">
@@ -840,13 +854,15 @@
   </xsl:template>
   
   <xd:doc>The upper-case hexadecimal digits.</xd:doc>
-  <xsl:variable name="hexDigitsUpper" select="('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')" />
+
+  <xsl:variable name="hexDigitsUpper" select="('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')" as="xs:string*"/>
   
   <xd:doc>
     <xd:short>Outputs title for character map details and creates detailed documentation for each character map.</xd:short>
     <xd:author>Greg Beauchesne</xd:author>
     <xd:since>09/2009</xd:since>
   </xd:doc>
+
   <xsl:template match="xsl:stylesheet | xsl:transform" mode="characterMapsDetail">
     <xsl:if test="xsl:character-map[xd:accessMatch(.)]">
       <div id="characterMapsDetail" class="detailSection">
@@ -950,33 +966,34 @@
     <xd:author>Greg Beauchesne</xd:author>
     <xd:since>09/2009</xd:since>
   </xd:doc>
+
   <xsl:template match="xsl:stylesheet | xsl:transform" mode="templateModesDetail">
-    <xsl:variable name="root" select="." />
-    
+    <xsl:variable name="root" select="." as="element(*)"/>
+
     <xsl:if test="(xd:doc | xsl:template)[xd:accessMatch(.)]/@mode">
-      <xsl:variable name="modeList" select="xd:getModes(.)" as="xs:string*" />
+      <xsl:variable name="modeList" select="xd:getModes(.)" as="xs:string*"/>
       <div id="templateModesDetail" class="detailSection">
         <h2>Template Modes Detail</h2>
         <xsl:for-each select="$modeList">
-          <xsl:sort />
+          <xsl:sort/>
           <div class="listItem">
-            <xsl:variable name="doc" select="$root/xd:doc[@mode = current()]" />
+            <xsl:variable name="doc" select="$root/xd:doc[@mode = current()]"/>
             <xsl:variable name="modeData">
-              <xd:mode name="{current()}" />
+              <xd:mode name="{current()}"/>
             </xsl:variable>
             <xsl:apply-templates select="$modeData" mode="printDeclaration">
-              <xsl:with-param name="doc" select="$doc" />
+              <xsl:with-param name="doc" select="$doc"/>
             </xsl:apply-templates>
             <div class="detailDoc">
               <xsl:apply-templates select="$modeData" mode="printShortDescription">
-                <xsl:with-param name="doc" select="$doc" />
+                <xsl:with-param name="doc" select="$doc"/>
               </xsl:apply-templates>
               <xsl:apply-templates select="$modeData" mode="printDetailDescription">
-                <xsl:with-param name="doc" select="$doc" />
+                <xsl:with-param name="doc" select="$doc"/>
               </xsl:apply-templates>
               <xsl:apply-templates select="$modeData" mode="printProperties">
-                <xsl:with-param name="root" select="$root" />
-                <xsl:with-param name="doc" select="$doc" />
+                <xsl:with-param name="root" select="$root"/>
+                <xsl:with-param name="doc" select="$doc"/>
               </xsl:apply-templates>
             </div>
           </div>
@@ -1049,7 +1066,7 @@
     </xsl:if>
   </xsl:template>
 
-   <xd:doc>JK, 11/2007 - Outputs title for variables details and creates detailed documentation for each variable</xd:doc>
+   <xd:doc>Outputs title for variables details and creates detailed documentation for each variable</xd:doc>
    <xsl:template match="xsl:stylesheet | xsl:transform" mode="variablesDetail">
       <xsl:if test="xsl:variable[xd:accessMatch(.)]">
          <div id="variablesDetail" class="detailSection">
@@ -1069,7 +1086,7 @@
       </xsl:if>
    </xsl:template>
 
-  <xd:doc>SM, 05/12/2007 - Outputs title for keys and creates detailed documentation for each key</xd:doc>
+  <xd:doc>Outputs title for keys and creates detailed documentation for each key</xd:doc>
   <xsl:template match="xsl:stylesheet | xsl:transform" mode="keysDetail">
 		<xsl:if test="xsl:key[xd:accessMatch(.)]">
 			<div id="keysDetail" class="detailSection">
@@ -1089,11 +1106,11 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xd:doc>JK, 11/2007 - Outputs title for attribute sets details and creates detailed documentation for each attribute set</xd:doc>
+	<xd:doc>Outputs title for attribute sets details and creates detailed documentation for each attribute set</xd:doc>
    <xsl:template match="xsl:stylesheet | xsl:transform" mode="attSetsDetail">
       <xsl:if test="xsl:attribute-set[xd:accessMatch(.)]">
          <div id="attSetsDetail" class="detailSection">
-            <h2>Attibute Sets Detail</h2>
+            <h2>Attribute Sets Detail</h2>
             <xsl:for-each select="xsl:attribute-set[xd:accessMatch(.)]">
                <xsl:sort select="@name"/>
                <div class="listItem"> 
@@ -1109,7 +1126,7 @@
       </xsl:if>
    </xsl:template>
    
-   <xd:doc>Prints details of the stylesheet.</xd:doc>
+  <xd:doc>Prints details of the stylesheet.</xd:doc>
   <xsl:template match="xsl:stylesheet | xsl:transform" mode="stylesheetDetail" xmlns="http://www.w3.org/1999/xhtml">
     <div xmlns="http://www.w3.org/1999/xhtml" id="stylesheetDetail">
       <!-- ************* Title ********************** -->
@@ -1128,7 +1145,7 @@
             </ul>
           </div>
         </xsl:if>
-        <!-- ************* Imorts ********************* -->
+        <!-- ************* Imports ********************* -->
         <xsl:if test="xsl:import">
           <div id="imports">
             <h2>Imports</h2>
@@ -1256,12 +1273,11 @@
   
   <xd:doc>
     <xd:short>Splits a whitespace-separated string into a sequence.</xd:short>
-    <xd:param name="string">
-      The string to split.
-    </xd:param>
+    <xd:param name="string">The string to split.</xd:param>
     <xd:author>Greg Beauchesne</xd:author>
     <xd:since>09/2009</xd:since>
   </xd:doc>
+
   <xsl:function name="xd:splitWhitespaceString" as="xs:string*">
     <xsl:param name="string" as="xs:string?"/>
     <xsl:sequence select="tokenize(normalize-space($string), ' ')" />
@@ -1274,14 +1290,15 @@
     <xd:author>Greg Beauchesne</xd:author>
     <xd:since>09/2009</xd:since>
   </xd:doc>
+
   <xsl:function name="xd:decToBase" as="xs:string">
-    <xsl:param name="dec" as="xs:integer" />
+    <xsl:param name="dec" as="xs:integer"/>
     <xsl:param name="digits" as="xs:string*"/>
-    <xsl:variable name="base" select="count($digits)" />
+
+    <xsl:variable name="base" select="count($digits)"/>
     <xsl:choose>
       <xsl:when test="$dec &lt; 0">
-        <xsl:text>-</xsl:text>
-        <xsl:value-of select="xd:decToBase(-$dec, $digits)"/>
+        <xsl:value-of select="concat('-', xd:decToBase(-$dec, $digits))"/>
       </xsl:when>
       <xsl:when test="$dec = 0">0</xsl:when>
       <xsl:otherwise>
@@ -1292,12 +1309,8 @@
   
   <xd:doc>
     <xd:short>Returns a sequence of templates using a given mode in a stylesheet.</xd:short>
-    <xd:param name="element">
-      The xsl:stylesheet or xsl:transform element.
-    </xd:param>
-    <xd:param name="name">
-      The mode name for which to search.
-    </xd:param>
+    <xd:param name="element">The xsl:stylesheet or xsl:transform element.</xd:param>
+    <xd:param name="name">The mode name for which to search.</xd:param>
     <xd:author>Greg Beauchesne</xd:author>
     <xd:since>09/2009</xd:since>
   </xd:doc>
@@ -1318,15 +1331,12 @@
   
   <xd:doc>
     <xd:short>Determines if an element satisfies the access level specified for the documentation generation.</xd:short>
-    <xd:param name="element">
-      The element to check.
-    </xd:param>
-    <xd:param name="access">
-      The access level. Defaults to the global xd:access parameter.
-    </xd:param>
+    <xd:param name="element">The element to check.</xd:param>
+    <xd:param name="access">The access level. Defaults to the global xd:access parameter.</xd:param>
     <xd:author>Greg Beauchesne</xd:author>
     <xd:since>09/2009</xd:since>
   </xd:doc>
+
   <xsl:function name="xd:accessMatch" as="xs:boolean">
     <xsl:param name="element" as="element(*)?"/>   
     <xsl:variable name="testAccess" select="if ($element/@xd:access) then $element/@xd:access else 'public'" />
@@ -1344,6 +1354,7 @@
     <xd:author>Greg Beauchesne</xd:author>
     <xd:since>09/2009</xd:since>
   </xd:doc>
+
   <xsl:template match="xsl:stylesheet | xsl:transform" mode="templateModesSummary">
     <xsl:variable name="root" select="." />
     
@@ -1438,6 +1449,7 @@
     <xd:author>Greg Beauchesne</xd:author>
     <xd:since>09/2009</xd:since>
   </xd:doc>
+
   <xsl:template match="xsl:stylesheet | xsl:transform" mode="elementSpaceSummary">
     <xsl:if test="(xsl:preserve-space | xsl:strip-space)[xd:accessMatch(.)]">
       <div id="elementSpaceSummary" class="summarySection">
@@ -1466,6 +1478,7 @@
     <xd:author>Greg Beauchesne</xd:author>
     <xd:since>09/2009</xd:since>
   </xd:doc>
+
   <xsl:template match="xsl:stylesheet | xsl:transform" mode="namespaceAliasesSummary">
     <xsl:if test="xsl:namespace-alias[xd:accessMatch(.)]">
       <div id="namespaceAliasesSummary" class="summarySection">
@@ -1562,7 +1575,6 @@
   </xsl:template>
   
   <xd:doc>
-    JK, 11/2007
     Generates variable summary section.
     Prints title of the section and then iterates through
     all top level variables and prints its declaration and short description
@@ -1586,33 +1598,31 @@
     </xsl:if>
   </xsl:template>
   
-	<xd:doc>
-		SM, 05/12/2007
-		Generates key summary section.
-		Prints title of the section and then iterates through
-		all keys and prints its declaration and short description
-	</xd:doc>
-	<xsl:template match="xsl:stylesheet | xsl:transform" mode="keysSummary">
-		<xsl:if test="xsl:key[xd:accessMatch(.)]">
-			<div id="keysSummary" class="summarySection">
-				<h2>Keys Summary</h2>
-				<xsl:for-each select="xsl:key[xd:accessMatch(.)]">
-					<xsl:sort select="@name"/>
-					<div class="listItem">      
-						<xsl:apply-templates select="." mode="printDeclaration">
-							<xsl:with-param name="link" select="concat('#', generate-id(.))"/>
-						</xsl:apply-templates>
-						<div class="shortDoc">
-							<xsl:apply-templates select="." mode="printShortDescription"/>
-						</div>
-					</div>
-				</xsl:for-each>
-			</div>
-		</xsl:if>
-	</xsl:template>
-	
-	<xd:doc>
-    JK, 11/2007
+  <xd:doc>
+      Generates key summary section.
+      Prints title of the section and then iterates through
+      all keys and prints its declaration and short description
+  </xd:doc>
+  <xsl:template match="xsl:stylesheet | xsl:transform" mode="keysSummary">
+      <xsl:if test="xsl:key[xd:accessMatch(.)]">
+          <div id="keysSummary" class="summarySection">
+              <h2>Keys Summary</h2>
+              <xsl:for-each select="xsl:key[xd:accessMatch(.)]">
+                  <xsl:sort select="@name"/>
+                  <div class="listItem">
+                      <xsl:apply-templates select="." mode="printDeclaration">
+                          <xsl:with-param name="link" select="concat('#', generate-id(.))"/>
+                      </xsl:apply-templates>
+                      <div class="shortDoc">
+                          <xsl:apply-templates select="." mode="printShortDescription"/>
+                      </div>
+                  </div>
+              </xsl:for-each>
+          </div>
+      </xsl:if>
+  </xsl:template>
+
+  <xd:doc>
     Generates attribute set summary section.
     Prints title of the section and then iterates through
     all top level variables and prints its declaration and short description
@@ -1668,9 +1678,10 @@
   
   <xd:doc>
     Default template in XdocTags mode. This ensures that elements that
-    need no conversion(html tags) are copied to the result tree.
+    need no conversion (HTML tags) are copied to the result tree.
     The namespace of an element is translated to xhtml!
   </xd:doc>
+
   <xsl:template match="*" mode="XdocTags">
     <xsl:element name="{node-name(.)}" namespace="http://www.w3.org/1999/xhtml">
       <xsl:copy-of select="@*"/>
@@ -1681,11 +1692,13 @@
   <xd:doc>
     Default template in XdocTags mode for elements in xd namespace.
   </xd:doc>
+
   <xsl:template match="xd:*" mode="XdocTags">
     <xsl:apply-templates mode="XdocTags"/>
   </xsl:template>
   
-  <xd:doc> Converts a xd:link element to a html link. (JK, 11/2007)</xd:doc>
+  <xd:doc>Converts a xd:link element to an HTML link.</xd:doc>
+
   <xsl:template match="xd:link" mode="XdocTags">
     <a>
       <xsl:variable name="name" select="if (@name) then @name else ."/>
@@ -1711,13 +1724,12 @@
           </xsl:if>
           <xsl:value-of select="."/>
           <xsl:if test="@mode">
-            <xsl:value-of select="concat(', mode=&quot;',@mode,'&quot;')"/>
+            <xsl:value-of select="concat(', mode=&quot;', @mode, '&quot;')"/>
           </xsl:if>
         </xsl:when>
         <xsl:otherwise>
           <!-- Fully automatic -->
           <xsl:apply-templates select="." mode="xdLinkText"/>
-          
         </xsl:otherwise>
        </xsl:choose>
      </a>

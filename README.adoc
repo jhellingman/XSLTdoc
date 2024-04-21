@@ -149,10 +149,11 @@ Example:
 
 [source,xml]
 ----
-&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:xd="http://www.pnp-software.com/XSLTdoc" version="2.0">
+<xsl:stylesheet 
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xd="http://www.pnp-software.com/XSLTdoc" version="2.0">
   ...
-&lt;/xsl:stylesheet>
+</xsl:stylesheet>
 ----
 
 === General documenting rules
@@ -162,10 +163,10 @@ documented. Generally this looks like this:
 
 [source,xml]
 ----
-&lt;xd:doc>
+<xd:doc>
   ...
-&lt;/xd:doc>
-&lt;xsl:...>
+<xd:doc>
+<xsl:...>
 ----
 
 Any XSLTdoc documentation is enclosed in an `xd:doc` element. If you just
@@ -175,11 +176,11 @@ remaining as detailed description:
 
 [source,xml]
 ----
-&lt;xd:doc>
+<xd:doc>
   This is the short description. And here comes a more detailed 
   description that appears in the detailed view of the documentation only.
-&lt;/xd:doc>
-&lt;xsl:...>
+</xd:doc>
+<xsl:...>
 ----
 
 If you use this technique, then no HTML elements are allowed in the text. If
@@ -188,15 +189,15 @@ the short and detailed description needs to enclosed in special XSLTdoc tags:
 
 [source,xml]
 ----
-&lt;xd:doc>
-  &lt;xd:short>This is the short description with 
-    &lt;code>HTML tags&lt;/code>.&lt;/xd:short>
-  &lt;xd:detail>
-    And here comes a &lt;b>more detailed&lt;/b> 
+<xd:doc>
+  <xd:short>This is the short description with 
+    <code>HTML tags</code>.</xd:short>
+  <xd:detail>
+    And here comes a <b>more detailed</b> 
     description showed only in the detailed view of the documentation.
-  &lt;/xd:detail>
-&lt;/xd:doc>
-&lt;xsl:...>
+  </xd:detail>
+</xd:doc>
+<xsl:...>
 ----
 
 === Stylesheet documentation
@@ -206,19 +207,18 @@ is written as a subelement of the target element (xsl:stylesheet). To mark a
 documentation element as a stylesheet documentation the type attribute of
 the `xd:doc` element must be set to `stylesheet`. A stylesheet documentation
 can have the following subelements (properties):
-`xd:author`, `xd:copyright`, `xd:cvsId`, `xd:svnId`. For example:
+`xd:author`, `xd:copyright`. For example:
 
 [source,xml]
 ----
-&lt;xsl:stylesheet ...>
-  &lt;xd:doc type="stylesheet">
+<xsl:stylesheet ...>
+  <xd:doc type="stylesheet">
     ...
-    &lt;xd:author>ibirrer&lt;/xd:author>
-    &lt;xd:copyright>P&amp;P Software, 2007&lt;/xd:copyright>
-    &lt;xd:cvsId>$Id: XSLTdocConfig.xml 42 2009-01-16 15:02:32Z ibirrer $&lt;/xd:cvsId>
-  &lt;xd:doc/>
+    <xd:author>ibirrer</xd:author>
+    <xd:copyright>P&amp;P Software, 2007</xd:copyright>
+  <xd:doc/>
   ...
-&lt;/xsl:stylesheet>
+</xsl:stylesheet>
 ----
 
 Properties can be added by writing a property extension. See the properties
@@ -231,14 +231,14 @@ To document a stylesheet parameter you can use the type attribute of the
 
 [source,xml]
 ----
-&lt;xsl:stylesheet ...>
+<xsl:stylesheet ...>
 ...
-  &lt;xd:doc type="string">
+  <xd:doc type="string">
     A Stylesheet parameter of type string.
-  &lt;/xd:doc>
-  &lt;xsl:param name="outputDir"/>
+  </xd:doc>
+  <xsl:param name="outputDir"/>
   ...
-&lt;/xsl:stylesheet>
+</xsl:stylesheet>
 ----
 
 === Function/Template Documentation
@@ -249,10 +249,10 @@ functions while the type attribute is optional for template definitions.
 
 [source,xml]
 ----
-&lt;xd:doc>
+<xd:doc>
   A template with a parameter of the type string.
-  &lt;xd:param type="string">The string to be processed.&lt;/xd:param>
-&lt;/xd:doc>
+  <xd:param type="string">The string to be processed.</xd:param>
+</xd:doc>
 ----
 
 Look at the source code of the XSLTdoc tool for more examples. The source
@@ -263,26 +263,26 @@ of a template or function and click on the source link.
 
 You can use so-called inline tags to tag special parts inside a
 `xs:short` or `xd:detail` element. The `xd:xml` inline tag can be used to
-print XML to the output. The whole XML inside the tag is transformed to html
+print XML to the output. All XML inside the tag is transformed to HTML
 by XSLTdoc.
 
 [source,xml]
 ----
-&lt;xd:doc>
-  &lt;xd:detail>
+<xd:doc>
+  <xd:detail>
     The following XML inside the xd:xml tag is printed exactly as it shows 
     here:
-    &lt;xd:xml>
-&lt;html>
-  &lt;head>&lt;/head>
-  &lt;body>
-    Bla
-  &lt;/body>
-&lt;/html>
-    &lt;/xd:xml>
-  &lt;xd:detail>
-&lt;/xd:doc>
-&lt;xsl:...>
+    <xd:xml>
+      <html>
+        <head>Head</head>
+        <body>
+          Body.
+        </body>
+      </html>
+    </xd:xml>
+  </xd:detail>
+</xd:doc>
+<xsl:...>
 ----
 
 == Building, developing, contributing
@@ -386,7 +386,7 @@ trying to download, configure and install an XSLT application by hand.
 
 == To do
 
-* This README needs a TOC that will work both on GitHub and when it's passed
+* This README needs a TOC that will work both on GitHub and when it is passed
  through markdown-it -&gt; xsltdoc. Right now, I don't know how to get consistent
  heading anchors in.
 * The npm `xmltools` library is currently in the works, which provides a better

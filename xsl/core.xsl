@@ -10,25 +10,28 @@
   <xsl:import href="stylesheet.xsl"/>
   <xsl:include href="verbatim/xmlverbatimwrapper.xsl"/>
   <xsl:include href="lib/util.xsl"/>
-  
+
   <xd:doc type="string">
     <xd:short>The directory in which the documentation should be generated.</xd:short>
     <xd:detail>
-      The directory given
-      must be relative to root stylesheet which is being processed.
-      This parameter is used to compute the variable <code>$targetDirUriAbs</code>. 
-      If this parameter is not set the <code>$targetDirUriAbs</code> variable 
-      defaults to the directory 'doc', which is created inside the same directory
-      in which the input stylesheet occurs.<br/>
-      <strong>Only used if the input is a stylesheet file. Not used if the input 
-        is a XSLTdocConfig XML file.</strong>
+      The directory given must be relative to root stylesheet which is being processed.
+      This parameter is used to compute the variable <code>$targetDirUriAbs</code>.
+      If this parameter is not set the <code>$targetDirUriAbs</code> variable
+      defaults to the directory 'doc', which is created inside the same
+      directory in which the input stylesheet occurs.
+      <br/>
+      <strong>Only used if the input is a stylesheet file. Not used if
+        the input is a XSLTdocConfig XML file.</strong>
     </xd:detail>
   </xd:doc>
+
   <xsl:param name="targetDir" select="false()"/>
-  
+
   <xd:doc>
-    Custom Stylesheets. Add additional (custom) CSS stylesheets here to override CSS rules from the standard CSS file (XSLTdoc.css).
+    Custom Stylesheets. Add additional (custom) CSS stylesheets here to
+    override CSS rules from the standard CSS file (XSLTdoc.css).
   </xd:doc>
+
   <xsl:param name="additionalCSS" as="xs:string*"/>
   
   
@@ -38,7 +41,6 @@
      This stylesheet
     </xd:detail>
     <xd:author>ibirrer</xd:author>
-    <xd:cvsId>$Id: core.xsl 43 2009-11-07 13:02:24Z ibirrer $</xd:cvsId>
     <xd:copyright>2004, P&amp;P Software GmbH</xd:copyright>
   </xd:doc>
   
@@ -51,15 +53,16 @@
   <xd:doc> 
     Root template if XSLTdocConfig file is not used; if the input is a stylesheet.
   </xd:doc>
+
   <xsl:template match="/xsl:stylesheet | /xsl:transform">
     <xsl:param name="config" tunnel="yes" as="element()"/>
-    <xsl:variable name="targetDirUriAbs" 
-      select="util:normalizeFolder(resolve-uri(
+    <xsl:variable name="targetDirUriAbs"
+                  select="util:normalizeFolder(resolve-uri(
         if ($targetDir) then $targetDir else 
           concat(util:getFolder(xs:string(base-uri(/))), 'doc/'), 
         xs:string(base-uri(/)) ))"/>
-    <xsl:variable name="sourceRootUriAbs" as="xs:string" 
-      select="util:getFolder(xs:string(base-uri(/)))"/>
+    <xsl:variable name="sourceRootUriAbs" as="xs:string"
+                  select="util:getFolder(xs:string(base-uri(/)))"/>
     <xsl:message>Generated documentation in: <xsl:value-of select="$targetDirUriAbs"/></xsl:message>
     <xsl:variable name="tmpConfig" as="element()">
       <xsl:element name="{node-name($config)}">
@@ -94,6 +97,7 @@
   <xd:doc> 
     Root template if XSLTdocConfig file is used
   </xd:doc>
+
   <xsl:template match="/XSLTdocConfig">
     <xsl:param name="config" tunnel="yes" as="element()"/>
     <xsl:variable name="targetDirUriAbs" 
@@ -120,7 +124,7 @@
         <xsl:if test="AdditionalCSS">
           <additionalCSS>
             <xsl:for-each select="AdditionalCSS/File">
-              <file uriAbs="{resolve-uri( @href , $targetDirUriAbs )}">
+              <file uriAbs="{resolve-uri(@href , $targetDirUriAbs)}">
                 <xsl:if test="@media">
                   <xsl:copy-of select="@media"/>
                 </xsl:if>
@@ -157,12 +161,11 @@
     
     <!-- Append the filelist to the config variable -->
     <xsl:variable name='finalConfig' 
-      select='util:appendElement(
-        util:appendElement($extConfig, $distinctStylesheetList), /XSLTdocConfig)'
+      select='util:appendElement(util:appendElement($extConfig, $distinctStylesheetList), /XSLTdocConfig)'
       as="element()"/>
     
     <!-- Write the report file -->
-    <xsl:result-document href='{resolve-uri( "xsltdoc-report.xml", $targetDirUriAbs )}'>
+    <xsl:result-document href='{resolve-uri("xsltdoc-report.xml", $targetDirUriAbs)}'>
       <xsl:copy-of select='$finalConfig'/>
     </xsl:result-document>
     

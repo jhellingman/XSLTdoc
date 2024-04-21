@@ -4,22 +4,24 @@
   xmlns:util="http://www.pnp-software.com/util"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   version="2.0">
+
   <xd:doc type="stylesheet">
     Utility functions used by other stylesheets.
     <xd:author>ibirrer</xd:author>
-    <xd:cvsId>$Id: util.xsl 24 2005-01-04 10:13:06Z ibirrer $</xd:cvsId>
     <xd:copyright>2004, P&amp;P Software GmbH</xd:copyright>
   </xd:doc>
+
   <!-- ********************************************************************** -->
   <!-- ***************************** Functions ****************************** -->
   <!-- ********************************************************************** -->
-  <xd:doc>Extracts the folder part of an URI.</xd:doc>
+
+  <xd:doc>Extracts the folder part of a URI.</xd:doc>
   <xsl:function name="util:getFolder">
     <xsl:param name="uri" as="xs:string"/>
     <xsl:sequence select="replace($uri, '(.*/)([^/]*)', '$1')"/>
   </xsl:function>
   
-  <xd:doc>Extracts the filename of an URI.</xd:doc>
+  <xd:doc>Extracts the filename of a URI.</xd:doc>
   <xsl:function name="util:getFile">
     <xsl:param name="uri" as="xs:string"/>
     <xsl:sequence select="replace($uri, '(.*/)([^/]*)', '$2')"/>
@@ -50,18 +52,18 @@
     <xd:short>Transforms a filesystem path to a URI. </xd:short>
     <xd:detail>
     	Backward slashes are transformed to forward slashes and the 
-    	prefix <code>file:/</code> is added, if the goven path is an absoulte path. 
+    	prefix <code>file:/</code> is added, if the given path is an absolute path.
     	If the argument is already a URI, it is left unchanged.
     </xd:detail>
-    <xd:param name="path">The Path to be transformed as a string</xd:param>
+    <xd:param name="path">The path to be transformed as a string</xd:param>
   </xd:doc>
   <xsl:function name="util:pathToUri">
     <xsl:param name="path" as="xs:string"/>
     <xsl:variable name="pathTmp" select="replace($path, '\\', '/')"/>
-    <xsl:sequence select="if(contains($pathTmp, 'file:/')) then 
+    <xsl:sequence select="if (contains($pathTmp, 'file:/')) then
                             $pathTmp
                           else
-                            if( util:isAbsolutePath($pathTmp) ) then
+                            if (util:isAbsolutePath($pathTmp)) then
                               if (starts-with($pathTmp, '/')) then
                                 concat('file:', $pathTmp)
                               else 
@@ -87,7 +89,7 @@
   </xd:doc>
   <xsl:function name="util:isAbsolutePath" as="xs:boolean">
     <xsl:param name="path" as="xs:string"/>
-    <xsl:sequence select="if( starts-with( $path,'/' ) or contains( $path, ':') )
+    <xsl:sequence select="if (starts-with($path,'/') or contains($path, ':'))
                           then true()
                           else false()"/>
   </xsl:function>
@@ -150,10 +152,10 @@
   </xsl:function>
   
   <xd:doc> 
-    <xd:short>Builds realive link between to files</xd:short>
+    <xd:short>Builds relative link between to files</xd:short>
     <xd:detail>
       Like <xd:link type="xsl:function">util:getRelativeUri</xd:link>, 
-      but the arguments are two abslute files URI instead of folders. The 
+      but the arguments are two absolute file URIs instead of folders. The
       filename is taken from the first argument.
     </xd:detail>
     <xd:param name="from">An absolute URI of a file</xd:param>
@@ -195,17 +197,17 @@
   </xsl:function>
   
   <xd:doc>
-    Returns the string after the last occurence of a given character.
+    Returns the string after the last occurrence of a given character.
     If the given character is not found the text is returned without change.
-    <xd:param name="text">The text from which to extarct the substring</xd:param>
+    <xd:param name="text">The text from which to extract the substring</xd:param>
     <xd:param name="token">The character after which the text should be returned</xd:param>
   </xd:doc>
   <xsl:function name="util:substringAfterLast">
     <xsl:param name="text"/>
     <xsl:param name="token"/>
     <xsl:choose>
-      <xsl:when test="contains( $text, $token )">
-        <xsl:variable name="regExpr" select="concat('(.*', $token,')([', $token, ']*)' )"/>
+      <xsl:when test="contains($text, $token)">
+        <xsl:variable name="regExpr" select="concat('(.*', $token, ')([', $token, ']*)' )"/>
         <xsl:value-of select="replace($text, $regExpr, '$2', 's')"/>
       </xsl:when>
     </xsl:choose>
@@ -216,7 +218,7 @@
   </xd:doc>
   <xsl:function name="util:fileSuffixToHtml">
     <xsl:param name="fileUri"/>
-    <xsl:sequence select="concat(substring-before( $fileUri, '.xml' ),'.html')"/>
+    <xsl:sequence select="concat(substring-before($fileUri, '.xml'),'.html')"/>
   </xsl:function>
   
   <xd:doc>
@@ -321,7 +323,6 @@
           <xsl:value-of select="concat('&lt;/', name(.),'&gt;')"/>
         </xsl:otherwise>
       </xsl:choose>
-      
     </span>
   </xsl:template>
   
@@ -379,10 +380,10 @@
     <xsl:param name="indent"/>
     <xsl:param name="indentFirstLine"/>
     <!-- Use flag 'm' for multi-line mode -->
-    <xsl:variable name="return" select="replace( $text, '^', $indent, 'm' )"/>
+    <xsl:variable name="return" select="replace($text, '^', $indent, 'm')"/>
     <xsl:choose>
       <xsl:when test="not($indentFirstLine)">
-        <xsl:value-of select="substring( $return, string-length($indent) + 1 )"/>
+        <xsl:value-of select="substring($return, string-length($indent) + 1)"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$return"/>

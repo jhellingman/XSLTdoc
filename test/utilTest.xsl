@@ -39,7 +39,7 @@
         </xsl:message>
       </xsl:when>
       <xsl:when test='not($quiet)'>
-        <xsl:message terminate='no'>
+        <xsl:message>
           <xsl:value-of select="$message"/>
         </xsl:message>
       </xsl:when>

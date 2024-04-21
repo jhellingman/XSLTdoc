@@ -69,4 +69,11 @@
     </xs:restriction>
   </xs:simpleType>
 
+  <!-- The tag mode is only used as a temporary object in the XSLT code! -->
+  <xs:element name="mode" type="Mode"/>
+
+  <xs:complexType name="Mode">
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+
 </xs:schema>
